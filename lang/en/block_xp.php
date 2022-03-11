@@ -377,6 +377,7 @@ $string['usealgo'] = 'Use the algorithm';
 $string['usecustomlevelbadges'] = 'Use custom level badges';
 $string['usecustomlevelbadges_help'] = 'When set to yes, you must provide an image for each level.';
 $string['unknowneventa'] = 'Unknown event ({$a})';
+$string['uniqueid'] = 'Unique ID';
 $string['viewas'] = 'View as';
 $string['when'] = 'When';
 $string['whoops'] = 'Whoops!';

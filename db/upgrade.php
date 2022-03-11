@@ -501,6 +501,7 @@ function xmldb_block_xp_upgrade($oldversion) {
 
         // Adding fields to table block_xp_drops.
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('name', XMLDB_TYPE_TEXT, '10', null, XMLDB_NOTNULL, null, null);
         $table->add_field('courseid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
         $table->add_field('points', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
         $table->add_field('uniqueid', XMLDB_TYPE_CHAR, '1333', null, XMLDB_NOTNULL, null, null);

@@ -25,29 +25,40 @@
 
 namespace block_xp\local\controller;
 
-use flexible_table;
+use block_xp\form\drop;
+use block_xp\output\drop_table;
 
 class drop_controller extends page_controller {
     /** @var string The route name. */
     protected $routename = 'drops';
     /** @var bool Whether manage permissions ar required. */
     protected $requiremanage = true;
+    /** @var moodleform The form. */
+    private $form;
 
     protected function define_optional_params() {
         return [
-            ['edit', false, PARAM_BOOL, true]
+            ['edit', null, PARAM_INT, false],
         ];
     }
     /**
      * @inheritDoc
      */
     protected function page_content() {
-        echo $this->get_renderer()->heading(get_string('preview'), 3);
-        if ($this->get_param('edit')) {
-            // We are editing/adding a new drop
-            $this->get_form()->display();
+        if ($this->get_param('edit') !== null) {
+            $form = $this->get_form($this->get_param('edit'));
+            if ($form->is_submitted()) {
+                // We are editing/adding a new drop
+
+            } else if ($form->is_cancelled()) {
+                // TODO: Update pagesize.
+                echo $this->get_table()->out(10, true);
+            } else {
+                echo $form->display();
+            }
         } else {
-            echo $this->get_table()->out();
+            // TODO: Update pagesize.
+            echo $this->get_table()->out(10, true);
         }
     }
 
@@ -65,13 +76,17 @@ class drop_controller extends page_controller {
         return get_string('drops', 'block_xp');
     }
 
-    protected function get_table(): flexible_table {
-        // TODO: New flex table in output
-        return new flexible_table();
+    protected function get_table(): \flexible_table {
+        $table = new drop_table($this->world);
+        $table->define_baseurl($this->pageurl->out(false));
+        return $table;
     }
 
-    protected function get_form(): \moodleform {
-        // TODO: New flex form in classes/form
-        return new \restore_moodleform();
+    protected function get_form(int $id = 0): \moodleform {
+        if (!$this->form) {
+            return new drop($this->pageurl->out(false), ['id' => $this->get_param('edit')]);
+        }
+
+        return $this->form;
     }
 }
