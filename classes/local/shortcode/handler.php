@@ -98,6 +98,31 @@ class handler {
     }
 
     /**
+     * Handle the drop.
+     *
+     * @param string $drop The drop.
+     * @param object $args The arguments of the code.
+     * @param string|null $content The content, if the drop wraps content.
+     * @param object $env The filter environment (contains context, noclean and originalformat).
+     * @param Closure $next The function to pass the content through to process sub drops.
+     * @return string The new content.
+     */
+    public static function xpdrop($drop, $args, $content, $env, $next) {
+        global $USER;
+        $world = static::get_world_from_env($env);
+        if (!$world) {
+            return;
+        }
+        // No id provided. Nothing to show.
+        if (!$args) {
+            return;
+        }
+
+        $state = $world->get_store()->get_state($USER->id);
+        return di::get('renderer')->drop($state->get_drop($args[1]));
+    }
+
+    /**
      * Handle the shortcode.
      *
      * @param string $shortcode The shortcode.

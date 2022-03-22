@@ -90,7 +90,7 @@
         <FIELD NAME="name" TYPE="text" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The course this drop belongs to"/>
         <FIELD NAME="points" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="The"/>
-        <FIELD NAME="uniqueid" TYPE="char" LENGTH="1333" NOTNULL="true" SEQUENCE="false" COMMENT="Generated unit"/>
+        <FIELD NAME="uniqueid" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Generated unit"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

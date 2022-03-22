@@ -32,6 +32,7 @@ use block_xp\local\xp\level_with_badge;
 use block_xp\local\xp\level_with_name;
 use block_xp\local\xp\state;
 use block_xp\output\xp_widget;
+use block_xp\local\drop\drop;
 
 /**
  * Block XP renderer class.
@@ -55,6 +56,14 @@ class block_xp_renderer extends plugin_renderer_base {
         $pic = new user_picture($user);
         $pic->size = 1;
         return $pic->get_url($this->page);
+    }
+
+    public function drop(drop $drop) {
+        $label = get_string("dropfound", "block_xp", $drop->get_xp());
+        return html_writer::tag(
+            'div',
+            html_writer::tag('a', $drop->get_xp(), ['aria-label' => $label]),
+        );
     }
 
     /**

@@ -84,6 +84,7 @@ $string['displayrank'] = 'Display rank';
 $string['displayrelativerank'] = 'Display a relative rank';
 $string['documentation'] = 'Documentation';
 $string['drops'] = 'Drops';
+$string['dropfound'] = '{$a} XP Drop!';
 $string['editinstructions'] = 'Edit information';
 $string['enablecheatguard'] = 'Enable cheat guard';
 $string['enablecheatguard_help'] = 'The cheat guard offers a simple inexpensive mechanism for preventing students to abuse the system using obvious techniques, such as refreshing the same page endlessly, or repeating the same action over and over again.
