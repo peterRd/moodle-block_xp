@@ -521,5 +521,25 @@ function xmldb_block_xp_upgrade($oldversion) {
         upgrade_block_savepoint(true, 2022021001, 'xp');
     }
 
+    if ($oldversion < 2022021002) {
+        // Define field userid to be added to block_xp_drops_collection.
+        $table = new xmldb_table('block_xp_drops_collection');
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('dropid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, '0');
+
+        // Indexes.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_index('user_drop', XMLDB_INDEX_NOTUNIQUE, ['dropid', 'userid']);
+
+        // Conditionally launch create table for block_xp_drops_collection.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Xp savepoint reached.
+        upgrade_block_savepoint(true, 2022021002, 'xp');
+    }
+
     return true;
 }

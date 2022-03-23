@@ -26,6 +26,8 @@
 namespace block_xp\local\xp;
 defined('MOODLE_INTERNAL') || die();
 
+use block_xp\local\drop\drop;
+use block_xp\local\drop\world_drop;
 use context_helper;
 use moodle_database;
 use stdClass;
@@ -366,4 +368,87 @@ class course_user_state_store implements course_state_store,
         $this->logger->log_reason($id, $amount, $reason);
     }
 
+    /**
+     * Get the drop from the db corresponding to the secret
+     *
+     * @param $secret
+     * @return drop|null
+     */
+    public function get_drop($secret) {
+        $record = $this->db->get_record('block_xp_drops', [
+            "uniqueid" => $secret,
+            "courseid" => $this->courseid
+        ]);
+
+        return $record ? $this->drop_from_record($record) : null;
+    }
+
+    /**
+     * A drop has been found, so trigger the collection process which involves logging the find.
+     *
+     * @param int $userid
+     * @param drop $drop
+     */
+    public function collect_drop(int $userid, drop $drop) {
+        $result = $this->db->insert_record('block_xp_drops_collection', [
+            "userid" => $userid,
+            "dropid" => $drop->get_id()
+        ]);
+        if ($result) {
+            $this->increase($userid, $drop->get_xp());
+        }
+    }
+
+    /**
+     * Check whether the given drop has already been collected by the user.
+     *
+     * @param int $userid
+     * @param drop $drop
+     * @return false|mixed|stdClass
+     */
+    public function has_collected(int $userid, drop $drop) {
+        $record = $this->db->get_record('block_xp_drops_collection', [
+            'userid' => $userid,
+            'dropid' => $drop->get_id()
+        ]);
+
+        return $record ?? false;
+    }
+
+    /**
+     * Generate a world_drop from the db record.
+     *
+     * @param $record
+     * @return drop
+     */
+    protected function drop_from_record($record) {
+        $drop = new world_drop($record->id, $record->points, $record->uniqueid, $record->courseid);
+        return $drop;
+    }
+
+    /**
+     * Create or update a drop.
+     *
+     * @param $id The id of the drop if editing
+     * @param $name The name for the drop.
+     * @param $xp The points awarded for the drop
+     * @param $secret The drop secret
+     * @return bool|int
+     */
+    public function create_drop($id, $name, $xp, $secret) {
+        $record = [
+            'name' => $name,
+            'points' => $xp,
+            'uniqueid' => $secret,
+            'courseid' => $this->courseid
+        ];
+        if ($id) {
+            $record['id'] = $id;
+            // We do not want to update the secret if we are updating.
+            unset($record['secret']);
+            return $this->db->update_record('block_xp_drops', $record);
+        }
+
+        return $this->db->insert_record('block_xp_drops', $record);
+    }
 }

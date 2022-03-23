@@ -17,40 +17,57 @@
 namespace block_xp\local\drop;
 
 /**
- * Drop interface
+ * A drop within a particular world.
  *
  * @package    block_xp
  * @copyright  2017 Frédéric Massart
  * @author     Peter Dias
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-interface drop {
+class world_drop implements drop {
+    /** @var int $id The id of the drop. */
+    protected $id;
+    /** @var int $xp The xp associated with this drop */
+    protected $xp;
+    /** @var string $secret The generated secret for the drop */
+    protected $secret;
+    /** @var int $courseid The world this belongs to */
+    protected $courseid;
+
+    public function __construct($id, $xp, $secret, $courseid) {
+        $this->id = $id;
+        $this->xp = $xp;
+        $this->courseid = $courseid;
+        $this->secret = $secret;
+    }
 
     /**
-     * Get the points for the drop
+     * Get the id of the drop
      *
      * @return int
      */
-    public function get_id();
+    public function get_id() {
+        return $this->id;
+    }
 
     /**
-     * Get the points for the drop
-     *
-     * @return int
+     * @inheritDoc
      */
-    public function get_xp();
+    public function get_xp() {
+        return $this->xp;
+    }
 
     /**
-     * Get the secret for the drop
-     *
-     * @return string
+     * @inheritDoc
      */
-    public function get_secret();
+    public function get_secret() {
+        return $this->secret;
+    }
 
     /**
-     * Get the courseid for the drop.
-     *
-     * @return int
+     * @inheritDoc
      */
-    public function get_courseid();
+    public function get_courseid() {
+        return $this->courseid;
+    }
 }

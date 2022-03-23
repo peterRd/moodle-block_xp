@@ -85,6 +85,9 @@ $string['displayrelativerank'] = 'Display a relative rank';
 $string['documentation'] = 'Documentation';
 $string['drops'] = 'Drops';
 $string['dropfound'] = '{$a} XP Drop!';
+$string['dropfoundheader'] = 'Drop found';
+$string['dropacquired'] = 'Congratulations you have successfully gained {$a} points.';
+$string['dropnotacquired'] = 'You have not acquired the drop.';
 $string['editinstructions'] = 'Edit information';
 $string['enablecheatguard'] = 'Enable cheat guard';
 $string['enablecheatguard_help'] = 'The cheat guard offers a simple inexpensive mechanism for preventing students to abuse the system using obvious techniques, such as refreshing the same page endlessly, or repeating the same action over and over again.
@@ -275,6 +278,7 @@ $string['searchandselectmodule'] = 'Search and select an activity or resource';
 $string['send'] = 'Send';
 $string['setpoints'] = 'Set points';
 $string['shortcode:xpbadge'] = 'The badge matching the current user\'s level.';
+$string['shortcode:xpdrop'] = 'The drop to be rendered in a course.';
 $string['shortcode:xpladder'] = 'Display a portion of the ladder.';
 $string['shortcode:xpladder_help'] = '
 By default, a portion of the ladder surrounding the current user will be displayed.

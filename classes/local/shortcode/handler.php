@@ -26,6 +26,7 @@
 namespace block_xp\local\shortcode;
 defined('MOODLE_INTERNAL') || die();
 
+use block_xp\local\permission\access_permissions;
 use context_course;
 use block_xp\di;
 use block_xp\local\sql\limit;
@@ -98,7 +99,7 @@ class handler {
     }
 
     /**
-     * Handle the drop.
+     * Handle the drop filter.
      *
      * @param string $drop The drop.
      * @param object $args The arguments of the code.
@@ -110,16 +111,26 @@ class handler {
     public static function xpdrop($drop, $args, $content, $env, $next) {
         global $USER;
         $world = static::get_world_from_env($env);
-        if (!$world) {
-            return;
-        }
         // No id provided. Nothing to show.
-        if (!$args) {
+        if (!$world || !$args) {
             return;
         }
 
-        $state = $world->get_store()->get_state($USER->id);
-        return di::get('renderer')->drop($state->get_drop($args[1]));
+        /** @var access_permissions $perms */
+        $perms = $world->get_access_permissions();
+        if (!$perms->can_manage() && !$perms->can_earn()) {
+            return;
+        }
+
+        // Secret is always the key of the first argument.
+        $secret = array_key_first($args);
+        $drop = $world->get_store()->get_drop($secret);
+        if ($drop && !$world->get_store()->has_collected($USER->id, $drop)) {
+            return di::get('renderer')->drop($drop, $perms);
+        } else if ($perms->can_manage()) {
+            // Drop not found. Just render the original content that triggered this handler.
+            return "[xpdrop $secret]";
+        }
     }
 
     /**

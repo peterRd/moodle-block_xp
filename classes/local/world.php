@@ -26,6 +26,7 @@
 namespace block_xp\local;
 defined('MOODLE_INTERNAL') || die();
 
+use block_xp\local\drop\drop;
 use block_xp\local\xp\levels_info;
 use block_xp\local\xp\state_store;
 
@@ -75,5 +76,13 @@ interface world {
      * @return state_store
      */
     public function get_store();
+
+    /**
+     * Get a particular drop in the world
+     *
+     * @param string $secret
+     * @return drop
+     */
+    public function get_drop($secret);
 
 }

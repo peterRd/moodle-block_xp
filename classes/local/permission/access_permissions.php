@@ -53,6 +53,14 @@ interface access_permissions {
     public function can_manage($userid = null);
 
     /**
+     * Whether the user can earn xp.
+     *
+     * @param int $userid The user ID.
+     * @return bool
+     */
+    public function can_earn($userid = null);
+
+    /**
      * Requires for user to be able to access the content.
      *
      * @param int $userid The user ID.

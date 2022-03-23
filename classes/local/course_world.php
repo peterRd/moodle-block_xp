@@ -270,4 +270,21 @@ class course_world implements world {
         $this->get_config()->set('defaultfilters', course_world_config::DEFAULT_FILTERS_MISSING);
     }
 
+    /**
+     * @param $secret
+     * @return drop\drop|null
+     */
+    public function get_drop($secret) {
+        if (!array_key_exists($this->drops, $secret)) {
+            if ($drop = $this->get_store()->get_drop($secret)) {
+                $this->drop[$drop->get_secret()] = $drop;
+            }
+        }
+        return $this->drop[$secret] ?? null;
+    }
+
+    public function create_drop($id, $name, $xp) {
+        $secret = bin2hex(random_bytes(50));
+        return $this->get_store()->create_drop($id, $name, $xp, $secret);
+    }
 }

@@ -53,6 +53,8 @@ class drop extends moodleform {
 
         $mform->addElement('hidden', 'courseid');
         $mform->setType('courseid', PARAM_TEXT);
+        $mform->addElement('hidden', 'edit');
+        $mform->setType('edit', PARAM_TEXT);
         
         $this->add_action_buttons();
     }

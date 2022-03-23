@@ -58,12 +58,19 @@ class block_xp_renderer extends plugin_renderer_base {
         return $pic->get_url($this->page);
     }
 
+    /**
+     * @param drop $drop
+     * @return string
+     * @throws coding_exception
+     */
     public function drop(drop $drop) {
         $label = get_string("dropfound", "block_xp", $drop->get_xp());
-        return html_writer::tag(
-            'div',
-            html_writer::tag('a', $drop->get_xp(), ['aria-label' => $label]),
-        );
+        return $this->render_from_template("block_xp/drop", [
+            'action' => $this->action_link(
+                '#', $label, null, ["data-secret" => $drop->get_secret(), "data-courseid" => $drop->get_courseid()],
+                 new pix_icon('i/droplet', '', 'block_xp'),
+            )
+        ]);
     }
 
     /**

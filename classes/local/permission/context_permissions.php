@@ -71,6 +71,16 @@ class context_permissions implements access_permissions, access_logs_permissions
     }
 
     /**
+     * Whether the user can earn xp.
+     *
+     * @param int $userid The user ID.
+     * @return bool
+     */
+    public function can_earn($userid = null) {
+        return has_capability('block/xp:earnxp', $this->context, $userid);
+    }
+
+    /**
      * Whether the user can manage the content.
      *
      * @param int $userid The user ID.
