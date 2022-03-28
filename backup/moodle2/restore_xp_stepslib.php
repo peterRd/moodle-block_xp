@@ -62,6 +62,7 @@ class restore_xp_block_structure_step extends restore_structure_step {
         $paths[] = new restore_path_element('block', '/block');
         $paths[] = new restore_path_element('config', '/block/config');
         $paths[] = new restore_path_element('filter', '/block/filters/filter');
+        $paths[] = new restore_path_element('drop', '/block/drops/drop');
 
         if ($userinfo) {
             $paths[] = new restore_path_element('xp', '/block/xps/xp');
@@ -127,6 +128,20 @@ class restore_xp_block_structure_step extends restore_structure_step {
             $this->log("block_xp: XP of user with id '{$data['userid']}' not restored, existing entry found", backup::LOG_DEBUG);
             return;
         }
+        $DB->insert_record('block_xp', $data);
+    }
+
+    /**
+     * Process the drop restore.
+     * @param $data
+     */
+    protected function process_drop($data) {
+        global $DB;
+        $data['courseid'] = $this->get_courseid();
+        if ($DB->record_exists('block_xp_drops', ['courseid' => $data['courseid'], 'uniqueid' => $data['uniqueid']])) {
+            $this->log("block_xp: Drop with code '{$data['uniqueid']}' not restored, existing entry found", backup::LOG_DEBUG);
+        }
+
         $DB->insert_record('block_xp', $data);
     }
 
