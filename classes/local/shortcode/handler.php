@@ -26,6 +26,7 @@
 namespace block_xp\local\shortcode;
 defined('MOODLE_INTERNAL') || die();
 
+use block_xp\local\permission\access_permissions;
 use context_course;
 use block_xp\di;
 use block_xp\local\sql\limit;
@@ -95,6 +96,42 @@ class handler {
         $world = di::get('course_world_factory')->get_world($courseid);
         $perms = $world->get_access_permissions();
         return $perms->can_access() ? $world : null;
+    }
+
+    /**
+     * Handle the drop filter.
+     *
+     * @param string $drop The drop.
+     * @param object $args The arguments of the code.
+     * @param string|null $content The content, if the drop wraps content.
+     * @param object $env The filter environment (contains context, noclean and originalformat).
+     * @param Closure $next The function to pass the content through to process sub drops.
+     * @return string The new content.
+     */
+    public static function xpdrop($drop, $args, $content, $env, $next) {
+        global $USER;
+        $world = static::get_world_from_env($env);
+        // No id provided. Nothing to show.
+        if (!$world || !$args) {
+            return;
+        }
+
+        /** @var access_permissions $perms */
+        $perms = $world->get_access_permissions();
+        if (!$perms->can_manage() && !has_capability('block/xp:earnxp', $world->get_context())) {
+            return;
+        }
+
+        // Secret is always the key of the first argument.
+        reset($args);
+        $secret = key($args);
+        $drop = $world->get_drop($secret);
+        if ($drop && !$world->get_drop_collection_logger()->is_logged($USER->id, $drop)) {
+            return di::get('renderer')->drop($drop, $perms);
+        } else if ($perms->can_manage()) {
+            // Drop not found. Just render the original content that triggered this handler.
+            return "[xpdrop $secret]";
+        }
     }
 
     /**

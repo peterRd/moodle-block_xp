@@ -26,6 +26,9 @@
 namespace block_xp\local;
 defined('MOODLE_INTERNAL') || die();
 
+use block_xp\di;
+use block_xp\local\factory\drop_repository_factory;
+use block_xp\local\logger\drop_collection_logger;
 use context;
 use context_course;
 use context_system;
@@ -68,6 +71,12 @@ class course_world implements world {
     protected $urlresolverfactory;
     /** @var object Observer object cache. */
     protected $statestoreobserver;
+    /** @var drop_repository $droprepository The drop repository */
+    protected $droprepository;
+    /** @var drop_collection_logger $droprepository The drop repository */
+    protected $droplogger;
+    /** @var array $drops An array of drops for the world */
+    protected $drops = [];
 
     /**
      * Constructor.
@@ -227,7 +236,8 @@ class course_world implements world {
                 $this->get_courseid(),
                 $this->get_collection_logger(),
                 $this->get_level_up_state_store_observer(),
-                $this->get_points_increased_state_store_observer()
+                $this->get_points_increased_state_store_observer(),
+                $this->get_drop_collection_logger()
             );
         }
         return $this->store;
@@ -270,4 +280,42 @@ class course_world implements world {
         $this->get_config()->set('defaultfilters', course_world_config::DEFAULT_FILTERS_MISSING);
     }
 
+    /**
+     * Get the drop repository for the world
+     *
+     * @return drop_repository
+     */
+    public function get_drop_repository() {
+        if (!$this->droprepository) {
+            $this->droprepository = di::get('drop_repository_factory')->get_repository($this->courseid);
+        }
+
+        return $this->droprepository;
+    }
+
+    /**
+     * Get the drop collection logger
+     *
+     * @return drop_collection_logger
+     */
+    public function get_drop_collection_logger() {
+        if (!$this->droplogger) {
+            $this->droplogger = new drop_collection_logger($this->db, $this->courseid);
+        }
+
+        return $this->droplogger;
+    }
+
+    /**
+     * @param $secret
+     * @return drop\drop|null
+     */
+    public function get_drop($secret) {
+        if (!array_key_exists($secret, $this->drops)) {
+            if ($drop = $this->get_drop_repository()->get_by_secret($secret)) {
+                $this->drops[$drop->get_secret()] = $drop;
+            }
+        }
+        return $this->drops[$secret] ?? null;
+    }
 }

@@ -26,6 +26,7 @@
 namespace block_xp\local;
 defined('MOODLE_INTERNAL') || die();
 
+use block_xp\local\factory\default_drop_repository_factory;
 use coding_exception;
 use moodle_url;
 
@@ -59,6 +60,7 @@ class default_container implements container {
         'course_world_leaderboard_factory' => true,
         'course_world_navigation_factory' => true,
         'db' => true,
+        'drop_repository_factory' => true,
         'file_server' => true,
         'observer_rules_maker' => true,
         'renderer' => true,
@@ -255,6 +257,15 @@ class default_container implements container {
             ),
             $this->get('config_locked')
         );
+    }
+
+    /**
+     * Course world factory.
+     *
+     * @return drop_repository_factory
+     */
+    protected function get_drop_repository_factory() {
+        return new default_drop_repository_factory($this->get('db'));
     }
 
     /**

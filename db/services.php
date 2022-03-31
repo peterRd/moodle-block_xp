@@ -54,4 +54,11 @@ $functions = [
         'type' => 'write',
         'ajax' => true,
     ],
+    'block_xp_drop_found' => [
+        'classname' => 'block_xp\external',
+        'methodname' => 'drop_increase_xp',
+        'description' => 'Increase the drop for the user',
+        'type' => 'write',
+        'ajax' => true,
+    ],
 ];
