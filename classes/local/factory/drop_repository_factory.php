@@ -14,18 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace block_xp\local\factory;
+
 /**
- * Version file.
+ * Drop repository factory.
  *
  * @package    block_xp
- * @copyright  2014 Frédéric Massart
+ * @copyright  2022 Branch Up Pty Ltd
+ * @author     Peter Dias
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+interface drop_repository_factory {
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->version    = 2022021002;
-$plugin->requires   = 2016052300;   // Moodle 3.1.0.
-$plugin->component  = 'block_xp';
-$plugin->maturity   = MATURITY_ALPHA;
-$plugin->release    = 'dev';
+    /**
+     * Get the leaderboard.
+     *
+     * @param int $courseid The world we are operating within.
+     * @return block_xp\local\repository\drop_repository
+     */
+    public function get_repository($courseid);
+}

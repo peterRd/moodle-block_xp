@@ -14,18 +14,27 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace block_xp\local\logger;
+
+use block_xp\local\reason\reason;
+use DateTime;
+
 /**
- * Version file.
+ * Check for the existence of a log entry.
  *
  * @package    block_xp
- * @copyright  2014 Frédéric Massart
+ * @copyright  2022 Branch Up Pty Ltd
+ * @author     Peter Dias
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->version    = 2022021002;
-$plugin->requires   = 2016052300;   // Moodle 3.1.0.
-$plugin->component  = 'block_xp';
-$plugin->maturity   = MATURITY_ALPHA;
-$plugin->release    = 'dev';
+interface reason_occurance_indicator {
+    /**
+     * Has the reason ever happened.
+     *
+     * @param int $id The user ID we are checking for.
+     * @param reason $reason The reason.
+     * @param DateTime|null $since The date OR null if check atleast one occurance in the whole lifetime.
+     * @return bool
+     */
+    public function has_reason_happened_since($id, reason $reason, DateTime $since = null);
+}
