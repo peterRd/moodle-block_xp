@@ -54,12 +54,17 @@ class backup_xp_block_structure_step extends backup_block_structure_step {
         $xplevel = new backup_nested_element('xp', array('courseid'), array('userid', 'xp', 'lvl'));
         $xplogs = new backup_nested_element('logs');
         $xplog = new backup_nested_element('log', array('courseid'), array('userid', 'eventname', 'xp', 'time'));
+        $xpdrops = new backup_nested_element('drops');
+        $xpdrop = new backup_nested_element('drop', array('courseid'), array('uniqueid', 'name', 'points'));
 
         // Prepare the structure.
         $xp = $this->prepare_block_structure($xpconfig);
 
         $xpfilters->add_child($xpfilter);
         $xp->add_child($xpfilters);
+
+        $xpdrops->add_child($xpdrop);
+        $xp->add_child($xpdrops);
 
         if ($userinfo) {
             $xplevels->add_child($xplevel);
@@ -74,6 +79,7 @@ class backup_xp_block_structure_step extends backup_block_structure_step {
         $xpfilter->set_source_table('block_xp_filters', array('courseid' => backup::VAR_COURSEID));
         $xplevel->set_source_table('block_xp', array('courseid' => backup::VAR_COURSEID));
         $xplog->set_source_table('block_xp_log', array('courseid' => backup::VAR_COURSEID));
+        $xpdrop->set_source_table('block_xp_drops', array('courseid' => backup::VAR_COURSEID));
 
         // Annotations.
         $xplevel->annotate_ids('user', 'userid');
