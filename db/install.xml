@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/xp/db" VERSION="20191203" COMMENT="XMLDB file for Moodle blocks/xp"
+<XMLDB PATH="blocks/xp/db" VERSION="20220328" COMMENT="XMLDB file for Moodle blocks/xp"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -82,6 +82,21 @@
       <INDEXES>
         <INDEX NAME="courseid" UNIQUE="false" FIELDS="courseid"/>
         <INDEX NAME="courseidcat" UNIQUE="false" FIELDS="courseid, category"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="block_xp_drops" COMMENT="Default comment for the table, please edit me">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="name" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The course this drop belongs to"/>
+        <FIELD NAME="points" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="The"/>
+        <FIELD NAME="uniqueid" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Generated unit"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="uniqueid" UNIQUE="true" FIELDS="uniqueid" COMMENT="Unique stuff"/>
       </INDEXES>
     </TABLE>
   </TABLES>

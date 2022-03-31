@@ -14,18 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace block_xp\local\repository;
+
+use block_xp\local\drop\drop;
+
 /**
- * Version file.
+ * Drop repository
  *
  * @package    block_xp
- * @copyright  2014 Frédéric Massart
+ * @copyright  2022 Branch Up Pty Ltd
+ * @author     Peter Dias
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+interface drop_repository {
 
-defined('MOODLE_INTERNAL') || die();
+    /**
+     * Get the formatted drop .
+     *
+     * @param string $secret The drop secret
+     * @return drop
+     */
+    public function get_by_secret($secret);
 
-$plugin->version    = 2022021002;
-$plugin->requires   = 2016052300;   // Moodle 3.1.0.
-$plugin->component  = 'block_xp';
-$plugin->maturity   = MATURITY_ALPHA;
-$plugin->release    = 'dev';
+    /**
+     * Get a drop by the id.
+     *
+     * @param $id
+     * @return drop
+     */
+    public function get_by_id($id);
+}
