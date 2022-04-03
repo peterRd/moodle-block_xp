@@ -26,6 +26,7 @@
 namespace block_xp\local;
 defined('MOODLE_INTERNAL') || die();
 
+use block_xp\local\factory\course_collection_logger_factory;
 use block_xp\local\factory\default_drop_repository_factory;
 use coding_exception;
 use moodle_url;
@@ -289,6 +290,15 @@ class default_container implements container {
             $this->get('url_resolver'),
             $this->get('config')
         );
+    }
+
+    /**
+     * Get the course collection logger factory.
+     *
+     * @return course_collection_logger_factory
+     */
+    protected function get_course_collection_logger_factory() {
+        return new course_collection_logger_factory($this->get('db'));
     }
 
     /**

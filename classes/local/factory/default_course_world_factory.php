@@ -98,6 +98,7 @@ class default_course_world_factory implements course_world_factory {
             $config = new config_stack([$this->configoverrides, $courseconfig]);
 
             $this->worlds[$courseid] = new \block_xp\local\course_world($config, $this->db, $courseid, $this->urlresolverfactory);
+            $this->worlds[$courseid]->set_collection_logger(di::get('course_collection_logger_factory')->get_collection_logger($courseid));
         }
         return $this->worlds[$courseid];
     }

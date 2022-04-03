@@ -250,9 +250,13 @@ class course_world implements world {
      */
     private function get_collection_logger() {
         if (!$this->logger) {
-            $this->logger = new \block_xp\local\logger\course_user_event_collection_logger($this->db, $this->courseid);
+            $this->log('block_xp: Collection logger not set up.', backup::LOG_DEBUG);
         }
         return $this->logger;
+    }
+
+    public function set_collection_logger(course_user_event_collection_logger $logger) {
+        $this->logger = $logger;
     }
 
     /**
