@@ -133,17 +133,14 @@ class restore_xp_block_structure_step extends restore_structure_step {
 
     /**
      * Process the drop restore.
+     *
      * @param $data
      */
     protected function process_drop($data) {
         global $DB;
         $data['courseid'] = $this->get_courseid();
-        $record = $DB->get_record('block_xp_drops', ['courseid' => $data['courseid'], 'uniqueid' => $data['uniqueid']]);
+        $record = $DB->record_exists('block_xp_drops', ['secret' => $data['secret']]);
         if ($record) {
-            $this->log("block_xp: Existing drop '{$data['name']}' in course. No updates performed.", backup::LOG_DEBUG);
-            return;
-        } else if ($DB->record_exists('block_xp_drops', ['uniqueid' => $data['uniqueid']]))  {
-            // Drop found in the site.
             $this->log("block_xp: Drop '{$data['name']}' not restored, existing entry found", backup::LOG_DEBUG);
             return;
         }

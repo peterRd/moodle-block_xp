@@ -76,13 +76,4 @@ interface world {
      * @return state_store
      */
     public function get_store();
-
-    /**
-     * Get a particular drop in the world
-     *
-     * @param string $secret
-     * @return drop
-     */
-    public function get_drop($secret);
-
 }

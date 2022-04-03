@@ -16,8 +16,11 @@
 
 namespace block_xp\local\logger;
 
+use block_xp\local\reason\reason;
+use DateTime;
+
 /**
- * Check for the existence of a log entry
+ * Check for the existence of a log entry.
  *
  * @package    block_xp
  * @copyright  2022 Branch Up Pty Ltd
@@ -28,10 +31,10 @@ interface reason_occurance_indicator {
     /**
      * Has the reason ever happened.
      *
-     * @param int $id The ID.
+     * @param int $id The user ID we are checking for.
      * @param reason $reason The reason.
-     * @param DateTime $since The date.
+     * @param DateTime|null $since The date OR null if check atleast one occurance in the whole lifetime.
      * @return bool
      */
-    public function has_reason_happened_since($id, reason $reason, DateTime $since);
+    public function has_reason_happened_since($id, reason $reason, DateTime $since = null);
 }

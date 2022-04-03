@@ -65,9 +65,14 @@ class block_xp_renderer extends plugin_renderer_base {
      */
     public function drop(drop $drop) {
         $label = get_string("dropfound", "block_xp", $drop->get_xp());
+        $actiondata = [
+            "data-secret" => $drop->get_secret(),
+            "data-courseid" => $drop->get_courseid(),
+            "data-id" => $drop->get_id(),
+        ];
         return $this->render_from_template("block_xp/drop", [
             'action' => $this->action_link(
-                '#', $label, null, ["data-secret" => $drop->get_secret(), "data-courseid" => $drop->get_courseid()],
+                '#', $label, null, $actiondata,
                  new pix_icon('i/droplet', '', 'block_xp'),
             )
         ]);

@@ -31,16 +31,16 @@ interface drop_repository {
     /**
      * Get the formatted drop .
      *
-     * @param string $secret The drop secret
-     * @return drop
+     * @param string $secret The drop secret.
+     * @return drop|null
      */
     public function get_by_secret($secret);
 
     /**
      * Get a drop by the id.
      *
-     * @param $id
-     * @return drop
+     * @param int $id The id of the drop we are trying to fetch.
+     * @return drop|null
      */
     public function get_by_id($id);
 }

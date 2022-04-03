@@ -26,9 +26,6 @@
 namespace block_xp\local\xp;
 defined('MOODLE_INTERNAL') || die();
 
-use block_xp\local\drop\drop;
-use block_xp\local\drop\world_drop;
-use block_xp\local\logger\drop_collection_logger;
 use context_helper;
 use moodle_database;
 use stdClass;
@@ -64,8 +61,6 @@ class course_user_state_store implements course_state_store,
     protected $table = 'block_xp';
     /** @var reason_collection_logger The logger. */
     protected $logger;
-    /** @var drop_collection_logger The logger. */
-    protected $droplogger;
     /** @var level_up_state_store_observer he observer. */
     protected $observer;
     /** @var points_increased_state_store_observer The observer. */
@@ -83,13 +78,11 @@ class course_user_state_store implements course_state_store,
      */
     public function __construct(moodle_database $db, levels_info $levelsinfo, $courseid,
             reason_collection_logger $logger, level_up_state_store_observer $observer = null,
-            points_increased_state_store_observer $pointsobserver = null,
-            drop_collection_logger $droplogger = null) {
+            points_increased_state_store_observer $pointsobserver = null) {
         $this->db = $db;
         $this->levelsinfo = $levelsinfo;
         $this->courseid = $courseid;
         $this->logger = $logger;
-        $this->droplogger = $droplogger;
         $this->observer = $observer;
         $this->pointsobserver = $pointsobserver;
     }
@@ -371,16 +364,5 @@ class course_user_state_store implements course_state_store,
     public function set_with_reason($id, $amount, reason $reason) {
         $this->set($id, $amount);
         $this->logger->log_reason($id, $amount, $reason);
-    }
-
-    /**
-     * A drop has been found, so trigger the collection process which involves logging the find.
-     *
-     * @param int $userid
-     * @param drop $drop
-     */
-    public function collect_drop(int $userid, drop $drop) {
-        $this->increase($userid, $drop->get_xp());
-        $this->droplogger->log_drop($userid, $drop);
     }
 }

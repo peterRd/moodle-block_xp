@@ -16,10 +16,8 @@
 
 namespace block_xp\local\factory;
 
-use \block_xp\local\course_world;
-
 /**
- * Drop repository factory
+ * Drop repository factory.
  *
  * @package    block_xp
  * @copyright  2022 Branch Up Pty Ltd
@@ -31,9 +29,8 @@ interface drop_repository_factory {
     /**
      * Get the leaderboard.
      *
-     * @param course_world $world The world.
-     * @param course_world $groupid The group ID, or 0 for none or all participants.
-     * @return block_xp\local\leaderboard\leaderboard
+     * @param int $courseid The world we are operating within.
+     * @return block_xp\local\repository\drop_repository
      */
-    public function get_repository($courseid = 0);
+    public function get_repository($courseid);
 }

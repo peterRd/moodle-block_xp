@@ -19,20 +19,20 @@ namespace block_xp\local\factory;
 use \block_xp\local\course_world;
 
 /**
- * Course reason occurance logger interface.
+ * Drop strategry factory interface.
  *
  * @package    block_xp
  * @copyright  2022 Branch Up Pty Ltd
  * @author     Peter Dias
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-interface course_reason_occurance_logger_factory {
+interface drop_collection_strategy_factory {
 
     /**
      * Get the leaderboard.
      *
      * @param course_world $world The world.
-     * @return reason_occurance_indicator
+     * @return drop_collection_strategy
      */
-    public function get_occurance_indicator(course_world $world);
+    public function get_collection_strategy(course_world $world);
 }

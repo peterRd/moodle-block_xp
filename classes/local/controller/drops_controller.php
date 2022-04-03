@@ -27,17 +27,22 @@ use block_xp\output\drop_table;
  * @author     Peter Dias
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class drop_controller extends page_controller {
+class drops_controller extends page_controller {
     /** @var string The route name. */
     protected $routename = 'drops';
     /** @var bool Whether manage permissions ar required. */
     protected $requiremanage = true;
     /** @var moodleform The form. */
     private $form;
+    /** @var drop_repository $droprepo The drop repository */
+    protected $droprepo;
 
+    /**
+     * @inheritDoc
+     */
     protected function define_optional_params() {
         return [
-            ['dropid', null, PARAM_INT, false],
+            ['dropid', null, PARAM_INT],
         ];
     }
 
@@ -45,12 +50,12 @@ class drop_controller extends page_controller {
      * @inheritDoc
      */
     protected function page_content() {
-        // We are handling a form display
+        // We are handling a form display.
         if ($this->get_param('dropid') !== null) {
             $form = $this->get_form($this->get_param('dropid'));
             if ($data = $form->get_data()) {
-                // We are editing/adding a new drop
-                $this->update_drop($data);
+                // We are editing/adding a new drop.
+                $this->save_drop($data);
             } else if (!$form->is_cancelled()) {
                 echo $form->display();
                 return;
@@ -58,42 +63,48 @@ class drop_controller extends page_controller {
         }
 
         $output = $this->get_renderer();
-        $nexturl = $this->urlresolver->reverse($this->get_route_name(), ['courseid' => $this->world->get_courseid()]);
-        $nexturl->param('dropid', 0);
+        $url = $this->pageurl;
+        $url->param('dropid', 0);
 
-        echo $output->action_link($nexturl, 'Add drop', null, ['class' => 'btn btn-primary']);
+        echo $output->action_link($url, get_string('adddrop', 'block_xp'), null, ['class' => 'btn btn-primary']);
         echo $this->get_table()->out(10, true);
     }
 
-    protected function update_drop($data) {
-        /** @var \moodle_database $db */
+    /**
+     * Update/Create a drop.
+     *
+     * @param \stdClass $data The drop data to be persisted.
+     */
+    protected function save_drop($data) {
         $db = \block_xp\di::get('db');
-        $secret = bin2hex(random_bytes(50));
+        $secret = substr(bin2hex(random_bytes(128)), 0, 7);
         $data->courseid = $this->world->get_courseid();
         if ($data->dropid) {
             $data->id = $data->dropid;
             $db->update_record('block_xp_drops', $data);
         } else {
-            $data->uniqueid = $secret;
+            $data->secret = $secret;
             $db->insert_record('block_xp_drops', $data);
         }
     }
 
     /**
-     * @return \lang_string|string
+     * @inheritDoc
      */
     protected function get_page_html_head_title() {
         return get_string('drops', 'block_xp');
     }
 
     /**
-     * @return \lang_string|string
+     * @inheritDoc
      */
     protected function get_page_heading() {
         return get_string('drops', 'block_xp');
     }
 
     /**
+     * Get the drop table.
+     *
      * @return \flexible_table
      */
     protected function get_table() {
@@ -103,21 +114,40 @@ class drop_controller extends page_controller {
     }
 
     /**
+     * Get the drop repository
+     *
+     * @return drop_repository
+     */
+    protected function get_drop_repository() {
+        if (!$this->droprepo) {
+            $this->droprepo = di::get('drop_repository_factory')->get_repository($this->world->get_courseid());
+        }
+
+        return $this->droprepo;
+    }
+
+    /**
+     * Get the drop form.
+     *
      * @param int $id
      * @return \moodleform
      */
-    protected function get_form(int $id = 0) {
+    protected function get_form($id = 0) {
         if (!$this->form) {
             $this->form = new drop($this->pageurl->out(false));
         }
 
         // Initialise the form with some basic information.
-        if ($drop = $this->world->get_drop_repository()->get_by_id($id)) {
-            $this->form->set_data([
-                'dropid' => $drop->get_id(),
-                'name' => $drop->get_name(),
-                'points' => $drop->get_xp(),
-            ]);
+        if ($id) {
+            $droprepo = $this->get_drop_repository();
+            $drop = $droprepo->get_by_id($id);
+            if ($drop) {
+                $this->form->set_data([
+                    'dropid' => $drop->get_id(),
+                    'name' => $drop->get_name(),
+                    'points' => $drop->get_xp(),
+                ]);
+            }
         }
 
         return $this->form;

@@ -166,7 +166,7 @@ class default_routes_config extends static_routes_config {
                 'drops',
                 '/drops/:courseid',
                 '~^/drops/(\d+)$~',
-                'drop',
+                'drops',
                 [
                     1 => 'courseid'
                 ]

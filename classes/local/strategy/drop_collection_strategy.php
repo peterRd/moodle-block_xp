@@ -14,25 +14,35 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace block_xp\local\factory;
+namespace block_xp\local\strategy;
 
-use \block_xp\local\course_world;
+use block_xp\local\drop\drop;
 
 /**
- * Course reason occurance logger interface.
+ * Drop collection strategy interface.
  *
  * @package    block_xp
  * @copyright  2022 Branch Up Pty Ltd
  * @author     Peter Dias
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-interface course_reason_occurance_logger_factory {
+interface drop_collection_strategy extends collection_strategy {
 
     /**
-     * Get the leaderboard.
+     * Handle an event.
      *
-     * @param course_world $world The world.
-     * @return reason_occurance_indicator
+     * @param drop $drop The drop that the user has found.
+     * @param int $userid The user that has found the drop.
+     * @return bool True if acquired.
      */
-    public function get_occurance_indicator(course_world $world);
+    public function collect_drop_for_user(drop $drop, $userid);
+
+    /**
+     * Can the user collect the event?
+     *
+     * @param drop $drop The drop that the user has found.
+     * @param int $userid The user that we need to check.
+     * @return bool
+     */
+    public function can_collect(drop $drop, $userid);
 }

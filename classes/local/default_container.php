@@ -26,8 +26,6 @@
 namespace block_xp\local;
 defined('MOODLE_INTERNAL') || die();
 
-use block_xp\local\factory\course_collection_logger_factory;
-use block_xp\local\factory\default_drop_repository_factory;
 use coding_exception;
 use moodle_url;
 
@@ -54,6 +52,7 @@ class default_container implements container {
         'collection_strategy' => true,
         'config' => true,
         'config_locked' => true,
+        'course_collection_logger_factory' => true,
         'course_world_block_any_instance_finder_in_context' => true,
         'course_world_block_instance_finder' => true,
         'course_world_block_instances_finder_in_context' => true,
@@ -61,6 +60,7 @@ class default_container implements container {
         'course_world_leaderboard_factory' => true,
         'course_world_navigation_factory' => true,
         'db' => true,
+        'drop_collection_strategy_factory' => true,
         'drop_repository_factory' => true,
         'file_server' => true,
         'observer_rules_maker' => true,
@@ -266,7 +266,7 @@ class default_container implements container {
      * @return drop_repository_factory
      */
     protected function get_drop_repository_factory() {
-        return new default_drop_repository_factory($this->get('db'));
+        return new \block_xp\local\factory\default_drop_repository_factory($this->get('db'));
     }
 
     /**
@@ -298,7 +298,16 @@ class default_container implements container {
      * @return course_collection_logger_factory
      */
     protected function get_course_collection_logger_factory() {
-        return new course_collection_logger_factory($this->get('db'));
+        return new \block_xp\local\factory\course_collection_logger_factory($this->get('db'));
+    }
+
+    /**
+     * Get the drop collection strategy factory.
+     *
+     * @return drop_collection_strategy_factory
+     */
+    protected function get_drop_collection_strategy_factory() {
+        return new \block_xp\local\factory\default_drop_collection_strategy_factory();
     }
 
     /**

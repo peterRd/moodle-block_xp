@@ -16,23 +16,25 @@
 
 namespace block_xp\local\factory;
 
-use \block_xp\local\course_world;
+use block_xp\di;
+use block_xp\local\course_world;
+use block_xp\local\strategy\course_world_drop_collection_strategy;
 
 /**
- * Course reason occurance logger interface.
+ * The drop collection strategy factory.
  *
  * @package    block_xp
  * @copyright  2022 Branch Up Pty Ltd
  * @author     Peter Dias
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-interface course_reason_occurance_logger_factory {
-
+class default_drop_collection_strategy_factory implements drop_collection_strategy_factory {
     /**
-     * Get the leaderboard.
-     *
-     * @param course_world $world The world.
-     * @return reason_occurance_indicator
+     * @inheritDoc
      */
-    public function get_occurance_indicator(course_world $world);
+    public function get_collection_strategy(course_world $world) {
+        // We need to do this because the logger is not exposed to public from a world.
+        $logger = di::get('course_collection_logger_factory')->get_collection_logger($world);
+        return new course_world_drop_collection_strategy($world->get_store(), $logger);
+    }
 }

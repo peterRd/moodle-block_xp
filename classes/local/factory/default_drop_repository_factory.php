@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace block_xp\local\factory;
+defined('MOODLE_INTERNAL') || die();
 
 use block_xp\local\repository\course_drop_repository;
 use moodle_database;
@@ -28,10 +29,10 @@ use moodle_database;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class default_drop_repository_factory implements drop_repository_factory {
-    /** @var moodle_database The DB. */
+    /** @var moodle_database $db The DB. */
     protected $db;
-    /** @var course_world[] World cache. */
-    protected $worlds = [];
+    /** @var course_drop_repository[] $repositories Repositories local cache. */
+    protected $repositories = [];
 
     /**
      * Constructor.
@@ -45,11 +46,11 @@ class default_drop_repository_factory implements drop_repository_factory {
     /**
      * @inheritDoc
      */
-    public function get_repository($courseid = 0) {
+    public function get_repository($courseid) {
         if (!isset($this->worlds[$courseid])) {
-            $this->worlds[$courseid] = new course_drop_repository($this->db, $courseid);
+            $this->repositories[$courseid] = new course_drop_repository($this->db, $courseid);
         }
 
-        return $this->worlds[$courseid];
+        return $this->repositories[$courseid];
     }
 }

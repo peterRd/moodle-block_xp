@@ -26,7 +26,6 @@
 namespace block_xp\local\shortcode;
 defined('MOODLE_INTERNAL') || die();
 
-use block_xp\local\permission\access_permissions;
 use context_course;
 use block_xp\di;
 use block_xp\local\sql\limit;
@@ -99,42 +98,6 @@ class handler {
     }
 
     /**
-     * Handle the drop filter.
-     *
-     * @param string $drop The drop.
-     * @param object $args The arguments of the code.
-     * @param string|null $content The content, if the drop wraps content.
-     * @param object $env The filter environment (contains context, noclean and originalformat).
-     * @param Closure $next The function to pass the content through to process sub drops.
-     * @return string The new content.
-     */
-    public static function xpdrop($drop, $args, $content, $env, $next) {
-        global $USER;
-        $world = static::get_world_from_env($env);
-        // No id provided. Nothing to show.
-        if (!$world || !$args) {
-            return;
-        }
-
-        /** @var access_permissions $perms */
-        $perms = $world->get_access_permissions();
-        if (!$perms->can_manage() && !has_capability('block/xp:earnxp', $world->get_context())) {
-            return;
-        }
-
-        // Secret is always the key of the first argument.
-        reset($args);
-        $secret = key($args);
-        $drop = $world->get_drop($secret);
-        if ($drop && !$world->get_drop_collection_logger()->is_logged($USER->id, $drop)) {
-            return di::get('renderer')->drop($drop, $perms);
-        } else if ($perms->can_manage()) {
-            // Drop not found. Just render the original content that triggered this handler.
-            return "[xpdrop $secret]";
-        }
-    }
-
-    /**
      * Handle the shortcode.
      *
      * @param string $shortcode The shortcode.
@@ -152,6 +115,45 @@ class handler {
         }
         $state = $world->get_store()->get_state($USER->id);
         return di::get('renderer')->level_badge($state->get_level());
+    }
+
+    /**
+     * Handle the shortcode.
+     *
+     * @param string $drop The shortcode.
+     * @param object $args The arguments of the code.
+     * @param string|null $content The content, if the shortcode wraps content.
+     * @param object $env The filter environment (contains context, noclean and originalformat).
+     * @param Closure $next The function to pass the content through to process sub shortcodes.
+     * @return string The new content.
+     */
+    public static function xpdrop($drop, $args, $content, $env, $next) {
+        global $USER;
+
+        $world = static::get_world_from_env($env);
+        // No id provided. Nothing to show.
+        if (!$world) {
+            return;
+        }
+
+        // No id and secret found. Return straightaway without displaying anything.
+        if (!isset($args['id']) && !isset($args['secret'])) {
+            return;
+        }
+
+        $perms = $world->get_access_permissions();
+        if (!$perms->can_manage() && !has_capability('block/xp:earnxp', $world->get_context())) {
+            return;
+        }
+
+        $droprepo = di::get('drop_repository_factory')->get_repository($world->get_courseid());
+        $drop = $droprepo->get_by_id($args['id']);
+        if ($drop && $drop->get_secret() == trim($args['secret'])) {
+            $dropstrategy = di::get('drop_collection_strategy_factory')->get_collection_strategy($world);
+            if ($dropstrategy->can_collect($drop, $USER->id) || $perms->can_manage()) {
+                return di::get('renderer')->drop($drop, $perms);
+            }
+        }
     }
 
     /**

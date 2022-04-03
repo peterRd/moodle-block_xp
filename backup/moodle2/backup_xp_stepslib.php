@@ -55,7 +55,7 @@ class backup_xp_block_structure_step extends backup_block_structure_step {
         $xplogs = new backup_nested_element('logs');
         $xplog = new backup_nested_element('log', array('courseid'), array('userid', 'eventname', 'xp', 'time'));
         $xpdrops = new backup_nested_element('drops');
-        $xpdrop = new backup_nested_element('drop', array('courseid'), array('uniqueid', 'name', 'points'));
+        $xpdrop = new backup_nested_element('drop', array('courseid'), array('secret', 'name', 'points'));
 
         // Prepare the structure.
         $xp = $this->prepare_block_structure($xpconfig);

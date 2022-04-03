@@ -29,8 +29,6 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/externallib.php');
 require_once($CFG->dirroot . '/course/externallib.php');
 
-use block_xp\local\course_world;
-use block_xp\local\factory\drop_repository;
 use block_xp\local\xp\algo_levels_info;
 use context_course;
 use context_system;
@@ -56,11 +54,47 @@ class external extends external_api {
      *
      * @return external_function_parameters
      */
-    public static function drop_increase_xp_parameters() {
+    public static function drop_found_parameters() {
         return new external_function_parameters([
             'secret' => new external_value(PARAM_ALPHANUM),
             'course' => new external_value(PARAM_INT),
+            'id' => new external_value(PARAM_INT),
         ]);
+    }
+
+    /**
+     * Trigger an xp increase when a drop has been found.
+     *
+     * @param string $secret The drop secret.
+     * @param int $courseid The course we are accessing the drop from.
+     * @param int $dropid The drop id
+     * @return array
+     */
+    public static function drop_found($secret, $courseid, $dropid) {
+        global $USER;
+        $params = self::validate_parameters(self::drop_found_parameters(), [
+            'secret' => $secret,
+            'course' => $courseid,
+            'id' => $dropid,
+        ]);
+
+        $world = di::get('course_world_factory')->get_world($params['course']);
+        $droprepo = di::get('drop_repository_factory')->get_repository($params['course']);
+        self::validate_context($world->get_context());
+
+        $dropfound = false;
+        $drop = $droprepo->get_by_id($params['id']);
+
+        if ($drop && $drop->get_secret() == $params['secret']) {
+            if (has_capability('block/xp:earnxp', $world->get_context())) {
+                // The strategy will handle the case whether a user has acquired the drop.
+                $dropstrategy = di::get('drop_collection_strategy_factory')->get_collection_strategy($world);
+                $dropfound = $dropstrategy->collect_drop_for_user($drop, $USER->id);
+            }
+        }
+        return [
+            'xp' => $dropfound ? $drop->get_xp() : 0
+        ];
     }
 
     /**
@@ -68,47 +102,10 @@ class external extends external_api {
      *
      * @return external_function_parameters
      */
-    public static function drop_increase_xp_returns() {
+    public static function drop_found_returns() {
         return new external_function_parameters([
-            'acquired' => new external_value(PARAM_BOOL),
-            'message' => new external_value(PARAM_TEXT),
+            'xp' => new external_value(PARAM_INT)
         ]);
-    }
-
-    /**
-     * Trigger an xp increase when a drop has been found.
-     *
-     * @param $secret The drop secret
-     * @param $course The course we are accessing the drop from.
-     * @return array
-     */
-    public static function drop_increase_xp($secret, $course) {
-        global $USER;
-        $params = self::validate_parameters(self::drop_increase_xp_parameters(), [
-            'secret' => $secret,
-            'course' => $course,
-        ]);
-
-        /** @var course_world $world */
-        $world = di::get('course_world_factory')->get_world($course);
-        /** @var drop_repository $drop */
-        $drop = di::get('drop_repository_factory')->get_repository($course);
-        self::validate_context($world->get_context());
-
-        $dropfound = false;
-        if (has_capability('block/xp:earnxp', $world->get_context())) {
-            $drop = $drop->get_by_secret($params['secret']);
-            if ($drop && !$world->get_drop_collection_logger()->is_logged($USER->id, $drop)) {
-                $dropfound = true;
-                $world->get_store()->collect_drop($USER->id, $drop);
-            }
-        }
-        return [
-            'acquired' => $dropfound,
-            'message' => $dropfound ?
-                get_string('dropacquired', 'block_xp', $drop->get_xp()) :
-                get_string('dropnotacquired', 'block_xp')
-        ];
     }
 
     /**

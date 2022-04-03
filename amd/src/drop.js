@@ -13,13 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-import Notification from 'core/notification';
 import Ajax from 'core/ajax';
-import {get_string} from 'core/str';
 
 /**
- * @module     theme_boost/boost
- * @copyright  2022 Peter Dias
+ * Handle drop found functionailty.
+ *
+ * @copyright  2022 Branch Up Pty Ltd
+ * @author     Peter Dias
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 /**
@@ -34,18 +34,14 @@ export const init = (element) => {
                 methodname: 'block_xp_drop_found',
                 args: {
                     secret: e.currentTarget.dataset.secret,
-                    course: e.currentTarget.dataset.courseid
+                    course: e.currentTarget.dataset.courseid,
+                    id: e.currentTarget.dataset.id
                 }
             }
         ];
 
-        return Ajax.call(calls)[0].then((result) =>  {
-            if (result.acquired) {
-                element.hide();
-                get_string('dropfoundheader', 'block_xp').then((test) => {
-                    Notification.alert(test, result.message);
-                });
-            }
+        return Ajax.call(calls)[0].then(() =>  {
+            // TODO: Do something in this callback.
         });
     });
 };

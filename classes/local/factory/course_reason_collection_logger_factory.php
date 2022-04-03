@@ -17,10 +17,9 @@
 namespace block_xp\local\factory;
 
 use \block_xp\local\course_world;
-use block_xp\local\logger\reason_collection_logger;
 
 /**
- * Drop repository factory
+ * Course reason collection logger interface.
  *
  * @package    block_xp
  * @copyright  2022 Branch Up Pty Ltd

@@ -21,7 +21,7 @@ require_once($CFG->libdir . '/formslib.php');
 use moodleform;
 
 /**
- * Drop edit form
+ * Drop edit form.
  *
  * @package    block_xp
  * @copyright  2022 Branch Up Pty Ltd

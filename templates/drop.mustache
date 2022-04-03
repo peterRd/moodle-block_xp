@@ -21,7 +21,25 @@
 
     Example context (json):
     {
-        "secret": "abcd1246"
+        "action": {
+            "disabled": false,
+            "url": "#",
+            "id": "test-id",
+            "classes": "btn btn-link",
+            "attributes": [
+                {
+                    "name": "title",
+                    "value": "Action link's title"
+                }
+            ],
+            "icon": {
+                "attributes": [
+                    {"name": "src", "value": "https://raw.githubusercontent.com/moodle/moodle/master/pix/t/check.png"},
+                    {"name": "alt", "value": "Action link's icon"}
+                ]
+            },
+            "text": "This is an action link"
+        }
     }
 }}
 <div id="block_xp-drop-{{uniqid}}">

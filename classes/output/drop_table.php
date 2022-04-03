@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace block_xp\output;
-
+defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/tablelib.php');
 
 use moodle_url;
@@ -32,9 +32,9 @@ use block_xp\local\course_world;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class drop_table extends table_sql {
-    /** @var course_world The world. */
+    /** @var course_world $world The world. */
     protected $world;
-    /** @var renderer_base The renderer. */
+    /** @var renderer_base $renderer The renderer. */
     protected $renderer;
 
     /**
@@ -68,7 +68,7 @@ class drop_table extends table_sql {
     }
 
     /**
-     * XP.
+     * XP column.
      *
      * @param stdClass $row The row.
      * @return string

@@ -24,7 +24,7 @@ namespace block_xp\local\drop;
  * @author     Peter Dias
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class world_drop implements drop {
+class static_drop implements drop {
     /** @var int $id The id of the drop. */
     protected $id;
     /** @var int $xp The xp associated with this drop */

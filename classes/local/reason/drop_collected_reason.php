@@ -14,25 +14,48 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace block_xp\local\factory;
-
-use \block_xp\local\course_world;
+namespace block_xp\local\reason;
 
 /**
- * Course reason occurance logger interface.
+ * Drop collected reason.
  *
  * @package    block_xp
  * @copyright  2022 Branch Up Pty Ltd
  * @author     Peter Dias
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-interface course_reason_occurance_logger_factory {
+class drop_collected_reason implements reason {
+
+    /** @var string $DROP_EVENT The signature of the event. */
+    static $DROP_EVENT = 'block_xp\event\drop_collected:';
 
     /**
-     * Get the leaderboard.
+     * Constructor.
      *
-     * @param course_world $world The world.
-     * @return reason_occurance_indicator
+     * @param id $id The id of the drop.
      */
-    public function get_occurance_indicator(course_world $world);
+    public function __construct($id) {
+        $this->eventname = self::$DROP_EVENT . $id;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function get_signature() {
+        return $this->eventname;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function get_type() {
+        return __CLASS__;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function from_signature($signature) {
+        return new static($signature);
+    }
 }

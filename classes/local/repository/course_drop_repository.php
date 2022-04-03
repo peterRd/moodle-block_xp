@@ -17,22 +17,20 @@
 namespace block_xp\local\repository;
 
 use block_xp\local\drop\drop;
-use block_xp\local\drop\world_drop;
+use block_xp\local\drop\static_drop;
 use moodle_database;
 
 /**
- * A repository for getting activity based on course logs.
- *
- * This is hardcoded based on the block_xp\local\logger\course_user_event_collection_logger.
+ * A repository for getting a drop from the course.
  *
  * @package    block_xp
- * @copyright  2017 Frédéric Massart
- * @author     Frédéric Massart <fred@branchup.tech>
+ * @copyright  2022 Branch Up Pty Ltd
+ * @author     Peter Dias
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class course_drop_repository implements drop_repository {
 
-    /** @var string The table name */
+    /** @var string $TABLE The table name. */
     const TABLE = 'block_xp_drops';
     /** @var moodle_database The DB. */
     protected $db;
@@ -55,7 +53,7 @@ class course_drop_repository implements drop_repository {
      */
     public function get_by_secret($secret) {
         $record = $this->db->get_record(self::TABLE, [
-            "uniqueid" => $secret,
+            "secret" => $secret,
             "courseid" => $this->courseid
         ]);
 
@@ -75,13 +73,13 @@ class course_drop_repository implements drop_repository {
     }
 
     /**
-     * Generate a world_drop from the db record.
+     * Generate a static_drop from the db record.
      *
-     * @param $record
+     * @param \stdClass $record The db drop record.
      * @return drop
      */
     protected function drop_from_record($record) {
-        $drop = new world_drop($record->id, $record->points, $record->uniqueid, $record->name, $record->courseid);
+        $drop = new static_drop($record->id, $record->points, $record->secret, $record->name, $record->courseid);
         return $drop;
     }
 }

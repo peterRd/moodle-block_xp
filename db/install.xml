@@ -84,19 +84,19 @@
         <INDEX NAME="courseidcat" UNIQUE="false" FIELDS="courseid, category"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="block_xp_drops" COMMENT="Default comment for the table, please edit me">
+    <TABLE NAME="block_xp_drops">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="name" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The course this drop belongs to"/>
-        <FIELD NAME="points" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="The"/>
-        <FIELD NAME="uniqueid" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Generated unit"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="64" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="points" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="secret" TYPE="char" LENGTH="12" NOTNULL="true" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
       <INDEXES>
-        <INDEX NAME="uniqueid" UNIQUE="true" FIELDS="uniqueid" COMMENT="Unique stuff"/>
+        <INDEX NAME="secret" UNIQUE="true" FIELDS="secret" COMMENT="Unique stuff"/>
       </INDEXES>
     </TABLE>
   </TABLES>

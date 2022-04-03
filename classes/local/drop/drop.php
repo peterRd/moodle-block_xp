@@ -15,40 +15,41 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace block_xp\local\drop;
+defined('MOODLE_INTERNAL') || die();
 
 /**
- * Drop interface
+ * Drop interface.
  *
  * @package    block_xp
- * @copyright  2017 Frédéric Massart
+ * @copyright  2022 Branch Up Pty Ltd
  * @author     Peter Dias
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 interface drop {
 
     /**
-     * Get the points for the drop
+     * Get the points for the drop.
      *
      * @return int
      */
     public function get_id();
 
     /**
-     * Get the points for the drop
+     * Get the points for the drop.
      *
      * @return int
      */
     public function get_xp();
 
     /**
-     * Get the secret for the drop
+     * Get the secret for the drop.
      *
      * @return string
      */
     public function get_secret();
 
     /**
-     * Get the name of the drop
+     * Get the name of the drop.
      *
      * @return string
      */
