@@ -16,30 +16,22 @@
 
 namespace block_xp\local\logger;
 
-use block_xp\local\drop\drop;
-
 /**
- * Collection logger.
+ * Check for the existence of a log entry
  *
  * @package    block_xp
  * @copyright  2022 Branch Up Pty Ltd
  * @author     Peter Dias
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-interface drop_logged {
+interface reason_occurance_indicator {
     /**
-     * Finds whether a drop has been logged
+     * Has the reason ever happened.
      *
+     * @param int $id The ID.
+     * @param reason $reason The reason.
+     * @param DateTime $since The date.
      * @return bool
      */
-    public function is_logged($userid, drop $drop);
-
-    /**
-     * Make a drop specific log entry.
-     *
-     * @param $userid
-     * @param drop $drop
-     * @return void
-     */
-    public function log_drop($userid, drop $drop);
+    public function has_reason_happened_since($id, reason $reason, DateTime $since);
 }
