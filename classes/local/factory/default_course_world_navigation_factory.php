@@ -108,6 +108,11 @@ class default_course_world_navigation_factory implements course_world_navigation
         }
         if ($accessperms->can_manage()) {
             $links[] = [
+                'id' => 'drops',
+                'url' => $urlresolver->reverse('drops', ['courseid' => $courseid]),
+                'text' => get_string('navdrops', 'block_xp')
+            ];
+            $links[] = [
                 'id' => 'levels',
                 'url' => $urlresolver->reverse('levels', ['courseid' => $courseid]),
                 'text' => get_string('navlevels', 'block_xp')

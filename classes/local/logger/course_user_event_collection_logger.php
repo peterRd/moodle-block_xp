@@ -40,7 +40,7 @@ use block_xp\local\reason\reason;
  * @author     Frédéric Massart <fred@branchup.tech>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class course_user_event_collection_logger implements reason_collection_logger, collection_logger_with_group_reset {
+class course_user_event_collection_logger implements reason_collection_logger, collection_logger_with_group_reset, reason_occurance_indicator {
 
     /** The table name. */
     const TABLE = 'block_xp_log';
@@ -155,4 +155,20 @@ class course_user_event_collection_logger implements reason_collection_logger, c
         $this->db->execute($sql, $params);
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function has_reason_happened_since($id, reason $reason, DateTime $since = null) {
+        $params = [
+            'userid' => $id,
+            'eventname' => $reason->get_signature(),
+            'courseid' => $this->courseid,
+        ];
+        $sql = "userid = :userid AND eventname = :eventname AND courseid = :courseid";
+        if ($since) {
+            $params['time'] = $since->getTimestamp();
+            $sql = "time >= :time";
+        }
+        return $this->db->record_exists_select(static::TABLE, $sql, $params);
+    }
 }

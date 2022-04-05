@@ -26,6 +26,7 @@
 namespace block_xp\local\factory;
 defined('MOODLE_INTERNAL') || die();
 
+use block_xp\di;
 use moodle_database;
 use block_xp\local\config\config;
 use block_xp\local\config\config_stack;
@@ -98,6 +99,7 @@ class default_course_world_factory implements course_world_factory {
             $config = new config_stack([$this->configoverrides, $courseconfig]);
 
             $this->worlds[$courseid] = new \block_xp\local\course_world($config, $this->db, $courseid, $this->urlresolverfactory);
+            $this->worlds[$courseid]->set_collection_logger(di::get('course_collection_logger_factory')->get_collection_logger($this->worlds[$courseid]));
         }
         return $this->worlds[$courseid];
     }

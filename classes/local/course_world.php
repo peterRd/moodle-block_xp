@@ -26,6 +26,7 @@
 namespace block_xp\local;
 defined('MOODLE_INTERNAL') || die();
 
+use block_xp\local\logger\course_user_event_collection_logger;
 use context;
 use context_course;
 use context_system;
@@ -240,9 +241,19 @@ class course_world implements world {
      */
     private function get_collection_logger() {
         if (!$this->logger) {
-            $this->logger = new \block_xp\local\logger\course_user_event_collection_logger($this->db, $this->courseid);
+            $this->log('block_xp: Collection logger not set up.', backup::LOG_DEBUG);
         }
         return $this->logger;
+    }
+
+    /**
+     * Set the collection logger
+     *
+     * @param course_user_event_collection_logger $logger
+     * @return void
+     */
+    public function set_collection_logger(course_user_event_collection_logger $logger) {
+        $this->logger = $logger;
     }
 
     /**
@@ -269,5 +280,4 @@ class course_world implements world {
         $this->get_filter_manager()->purge();
         $this->get_config()->set('defaultfilters', course_world_config::DEFAULT_FILTERS_MISSING);
     }
-
 }
